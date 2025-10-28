@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "matrix_utils"
+version = "0.1.0"
+description = "Pakiet z funkcjami do pracy z macierzami"
+authors = ["Krzemon <przemek12413@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+numpy = "^1.26.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.3"
