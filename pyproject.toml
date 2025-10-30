@@ -17,8 +17,8 @@ readme = "README.md"
 # Zależności projektu
 # -----------------------------
 dependencies = [
-    "llvmlite==0.45.1"
-    "numba==0.62.1"
+    "llvmlite==0.45.1",
+    "numba==0.62.1",
     "numpy==2.3.4"
 ]
 
