@@ -38,4 +38,4 @@ dev = [
 # Pakiety do uwzględnienia w buildzie
 # -----------------------------
 [tool.setuptools.packages.find]
-where = ["app"]
+where = ["matrix_utils"]
