@@ -10,3 +10,9 @@ pytest -v
 
 pip install -e .[dev]
 pip install -e . 
+
+Uruchom wszystkie testy:
+pytest
+
+Uruchom testy z raportem pokrycia kodu (jeśli masz pytest-cov):
+pytest --cov=matrix_utils
