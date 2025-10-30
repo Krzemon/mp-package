@@ -1,13 +1,41 @@
-[tool.poetry]
-name = "matrix_utils"
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mp-package"
 version = "0.1.0"
-description = "Pakiet z funkcjami do pracy z macierzami"
-authors = ["Krzemon <przemek12413@gmail.com>"]
-license = "MIT"
+description = "Python package for random matrix computations"
+authors = [
+    { name = "Przemysław Ryś", email = "przemek12413@gmail.com" }
+]
+requires-python = ">=3.13"
+license = { text = "MIT" }
+readme = "README.md"
 
-[tool.poetry.dependencies]
-python = "^3.13"
-numpy = "^1.26.0"
+# -----------------------------
+# Zależności projektu
+# -----------------------------
+dependencies = [
+    "llvmlite==0.45.1"
+    "numba==0.62.1"
+    "numpy==2.3.4"
+]
 
-[tool.poetry.dev-dependencies]
-pytest = "^7.3"
+# -----------------------------
+# Zależności developerskie (opcjonalnie)
+# -----------------------------
+[tool.setuptools.extras_require]
+dev = [
+    "pytest==8.4.2",
+    "iniconfig==2.3.0",
+    "packaging==25.0",
+    "pluggy==1.6.0",
+    "Pygments==2.19.2"
+]
+
+# -----------------------------
+# Pakiety do uwzględnienia w buildzie
+# -----------------------------
+[tool.setuptools.packages.find]
+where = ["app"]

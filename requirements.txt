@@ -1,0 +1,8 @@
+iniconfig==2.3.0
+llvmlite==0.45.1
+numba==0.62.1
+numpy==2.3.4
+packaging==25.0
+pluggy==1.6.0
+Pygments==2.19.2
+pytest==8.4.2
