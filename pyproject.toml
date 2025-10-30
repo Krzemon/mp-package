@@ -25,14 +25,24 @@ dependencies = [
 # -----------------------------
 # Zależności developerskie (opcjonalnie)
 # -----------------------------
-[tool.setuptools.extras_require]
-dev = [
-    "pytest==8.4.2",
-    "iniconfig==2.3.0",
-    "packaging==25.0",
-    "pluggy==1.6.0",
-    "Pygments==2.19.2"
-]
+optional-dependencies = { 
+    dev = [
+        "pytest==8.4.2",
+        "iniconfig==2.3.0",
+        "packaging==25.0",
+        "pluggy==1.6.0",
+        "Pygments==2.19.2"
+    ]
+}
+
+#[tool.setuptools.extras_require]
+#dev = [
+#    "pytest==8.4.2",
+#    "iniconfig==2.3.0",
+#    "packaging==25.0",
+#    "pluggy==1.6.0",
+#    "Pygments==2.19.2"
+#]
 
 # -----------------------------
 # Pakiety do uwzględnienia w buildzie
