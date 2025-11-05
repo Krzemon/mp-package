@@ -13,18 +13,13 @@ requires-python = ">=3.13"
 license = { text = "MIT" }
 readme = "README.md"
 
-# -----------------------------
-# Zależności projektu
-# -----------------------------
 dependencies = [
     "llvmlite==0.45.1",
     "numba==0.62.1",
-    "numpy==2.3.4"
+    "numpy==2.3.4",
+    "scipy==1.16.3"
 ]
 
-# -----------------------------
-# Zależności developerskie (opcjonalnie)
-# -----------------------------
 [project.optional-dependencies]
 dev = [
     "pytest==8.4.2",
@@ -34,8 +29,5 @@ dev = [
     "Pygments==2.19.2"
 ]
 
-# -----------------------------
-# Pakiety do uwzględnienia w buildzie
-# -----------------------------
 [tool.setuptools.packages.find]
-where = ["matrix_utils"]
+where = ["mp_package"]
