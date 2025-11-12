@@ -30,4 +30,5 @@ dev = [
 ]
 
 [tool.setuptools.packages.find]
-where = ["mp_package"]
+where = ["."]
+include = ["mp_package*"]
