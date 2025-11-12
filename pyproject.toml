@@ -6,9 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "mp-package"
 version = "0.1.0"
 description = "Python package for random matrix computations"
-authors = []
-author = "Przemysław Ryś"
-author-email = "przemek12413@gmail.com"
+authors = [{name="Przemysław Ryś", email="przemek12413@gmail.com"}]
 requires-python = ">=3.13"
 license = { text = "MIT" }
 readme = "README.md"
