@@ -3,7 +3,6 @@
 import numpy as np
 from scipy.optimize import root_scalar
 
-
 def generate_X(N: int, T: int, N1: int, sigmas_squared: list[float]) -> np.ndarray:
     """
     Generuje macierz danych X z dwoma grupami o roznych wariancjach.
@@ -138,45 +137,45 @@ def generate_eigenvalues_batch(N: int, T: int, N1: int, sigmas_squared: list[flo
 # num_trials = 100000 # liczba wywolan
 # batch_size = 10000 # rozmiar batchu
 # bins=100 # liczba binow 
-# T_list = [40, 100, 400, 2000] # => T: int
+# T_list = [40, 100, 400, 2000]
 
 
 ###############   obliczenia 
 
 
-fig, axs = plt.subplots(2, 2, figsize=(16, 12))
-axs = axs.flatten()
+# fig, axs = plt.subplots(2, 2, figsize=(16, 12))
+# axs = axs.flatten()
 
-for idx, T in enumerate(T_list):
-    print(f"\n==== T = {T} ====")
+# for idx, T in enumerate(T_list):
+#     print(f"\n==== T = {T} ====")
 
-    x_theo, rho_theo = theoretical_eigenvalue_distribution(N, T, N1, sigmas_squared, num_points=1000)
-    if len(x_theo) == 0 or len(rho_theo) == 0:
-        print("BŁĄD: Nie udało się obliczyć teoretycznego rozkładu!")
-        continue
+#     x_theo, rho_theo = theoretical_eigenvalue_distribution(N, T, N1, sigmas_squared, num_points=1000)
+#     if len(x_theo) == 0 or len(rho_theo) == 0:
+#         print("BŁĄD: Nie udało się obliczyć teoretycznego rozkładu!")
+#         continue
 
-    all_eigenvalues = []
-    num_batches = num_trials // batch_size
-    start_time = time.time()
-    for i in tqdm(range(num_batches), desc=f"T={T}"):
-        batch_eigenvalues = generate_eigenvalues_batch(N, T, N1, sigmas_squared, batch_size)
-        all_eigenvalues.extend(batch_eigenvalues)
+#     all_eigenvalues = []
+#     num_batches = num_trials // batch_size
+#     start_time = time.time()
+#     for i in tqdm(range(num_batches), desc=f"T={T}"):
+#         batch_eigenvalues = generate_eigenvalues_batch(N, T, N1, sigmas_squared, batch_size)
+#         all_eigenvalues.extend(batch_eigenvalues)
 
-    elapsed_time = (time.time() - start_time) / 60
-    print(f"Wygenerowano {len(all_eigenvalues)} wartości własnych w czasie {elapsed_time:.1f} min")
+#     elapsed_time = (time.time() - start_time) / 60
+#     print(f"Wygenerowano {len(all_eigenvalues)} wartości własnych w czasie {elapsed_time:.1f} min")
 
-    ax = axs[idx]
-    ax.hist(all_eigenvalues, bins=bins, density=True, alpha=0.6, color='skyblue', label=f'Histogram dla {num_trials} prób')
-    ax.plot(x_theo, rho_theo, 'r-', linewidth=3, label='Teoretyczny rozkład')
+#     ax = axs[idx]
+#     ax.hist(all_eigenvalues, bins=bins, density=True, alpha=0.6, color='skyblue', label=f'Histogram dla {num_trials} prób')
+#     ax.plot(x_theo, rho_theo, 'r-', linewidth=3, label='Teoretyczny rozkład')
 
-    line1 = ax.axvline(x=sigmas_squared[0], color='green', linewidth=2, linestyle='--', alpha=0.8)
-    line2 = ax.axvline(x=sigmas_squared[1], color='green', linewidth=2, linestyle='--', alpha=0.8)
+#     line1 = ax.axvline(x=sigmas_squared[0], color='green', linewidth=2, linestyle='--', alpha=0.8)
+#     line2 = ax.axvline(x=sigmas_squared[1], color='green', linewidth=2, linestyle='--', alpha=0.8)
 
-    ax.set_title(f'N={N}, T={T}, r={N/T:.4f}', fontsize=14)
-    ax.set_xlabel('Wartość własna', fontsize=12)
-    ax.set_ylabel('Gęstość prawdopodobieństwa', fontsize=12)
-    ax.legend(fontsize=10)
-    ax.grid(True, alpha=0.3)
+#     ax.set_title(f'N={N}, T={T}, r={N/T:.4f}', fontsize=14)
+#     ax.set_xlabel('Wartość własna', fontsize=12)
+#     ax.set_ylabel('Gęstość prawdopodobieństwa', fontsize=12)
+#     ax.legend(fontsize=10)
+#     ax.grid(True, alpha=0.3)
 
-plt.tight_layout()
-plt.show()
+# plt.tight_layout()
+# plt.show()
