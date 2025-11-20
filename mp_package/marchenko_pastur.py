@@ -9,8 +9,8 @@ def generate_X(N_list: list[int], T: int, sigmas_squared: list[float]) -> np.nda
     N_list[i] - liczba wierszy dla grupy i
     sigmas_squared[i] - wariancja dla grupy i
     """
-    if len(N_list) != len(sigmas_squared):
-        raise ValueError("N_list i sigmas_squared muszą mieć tę samą długość")
+    # if len(N_list) != len(sigmas_squared):
+    #     raise ValueError("N_list i sigmas_squared muszą mieć tę samą długość")
     
     N_total = sum(N_list)
     X = np.zeros((N_total, T))
