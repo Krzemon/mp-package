@@ -125,9 +125,12 @@ def generate_eigenvalues(N_list: list[int], T: int, sigmas_squared: list[float],
     """
     Generuje wartosci wlasne w partiach, aby efektywnie zarzadzac pamiecia.
     """
-    eigenvalues = []
-    for _ in range(num_trials):
+    N_total = sum(N_list)
+    all_eigenvalues = np.empty(num_trials * N_total)
+
+    for i in range(num_trials):
         X = generate_X(N_list, T, sigmas_squared)
-        C = (1/T) * X @ X.T
-        eigenvalues.extend(np.linalg.eigvalsh(C))
-    return eigenvalues
+        C = (1 / T) * X @ X.T
+        all_eigenvalues[i * N_total : (i + 1) * N_total] = np.linalg.eigvalsh(C)
+
+    return all_eigenvalues
