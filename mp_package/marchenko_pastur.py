@@ -132,4 +132,4 @@ def generate_eigenvalues_batch(N_list: list[int], T: int, sigmas_squared: list[f
         X = generate_X(N_list, T, sigmas_squared)
         C = (1/T) * X @ X.T
         eigenvalues.extend(np.linalg.eigvalsh(C))
-    return eigenvalues.tolist()
+    return eigenvalues
