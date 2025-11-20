@@ -3,14 +3,22 @@
 import numpy as np
 from scipy.optimize import root_scalar
 
-def generate_X(N: int, T: int, N1: int, sigmas_squared: list[float]) -> np.ndarray:
+def generate_X(N_list: list[int], T: int, sigmas_squared: list[float]) -> np.ndarray:
     """
-    Generuje macierz danych X z dwoma grupami o roznych wariancjach.
+    Generuje macierz danych X z wieloma grupami o roznych wariancjach.
+    N_list[i] - liczba wierszy dla grupy i
+    sigmas_squared[i] - wariancja dla grupy i
     """
-    N2 = N - N1
-    X = np.zeros((N, T))
-    X[:N1, :] = np.random.normal(0, np.sqrt(sigmas_squared[0]), (N1, T))
-    X[N1:, :] = np.random.normal(0, np.sqrt(sigmas_squared[1]), (N2, T))
+    if len(N_list) != len(sigmas_squared):
+        raise ValueError("N_list i sigmas_squared muszą mieć tę samą długość")
+    
+    N_total = sum(N_list)
+    X = np.zeros((N_total, T))
+    start_row = 0
+    for n_rows, sigma_sq in zip(N_list, sigmas_squared):
+        end_row = start_row + n_rows
+        X[start_row:end_row, :] = np.random.normal(0, np.sqrt(sigma_sq), size=(n_rows, T))
+        start_row = end_row
     return X
 
 def equation_7(Y: float, X: float, weights: list[float], sigmas_squared: list[float], r: float) -> float:
@@ -96,14 +104,14 @@ def estimate_spectrum_range(sigmas_squared: list[float], r: float) -> tuple[floa
     # print(f"Zakres widma: X_min = {X_min:.4f}, X_max = {X_max:.4f}")
     return X_min, X_max
 
-def theoretical_eigenvalue_distribution(N: int, T: int, N1: int, sigmas_squared: list[float], num_points: int=1000) -> tuple[np.ndarray, np.ndarray]:
+def theoretical_eigenvalue_distribution(N_list: list[int], T: int, sigmas_squared: list[float], num_points: int=1000) -> tuple[np.ndarray, np.ndarray]:
     """
     Oblicza teoretyczny rozklad wartosci wlasnych dla macierzy korelacji.
     """
-    N2 = N - N1
-    weights = [N1/N, N2/N]
-    r = N/T
-    
+    N_total = sum(N_list)
+    weights = [n / N_total for n in N_list]
+    r = N_total / T
+
     X_min, X_max = estimate_spectrum_range(sigmas_squared, r)
     X_values = np.linspace(X_min, X_max, num_points)
     Y_values = find_critical_horizon(X_values, weights, sigmas_squared, r)
@@ -115,13 +123,13 @@ def theoretical_eigenvalue_distribution(N: int, T: int, N1: int, sigmas_squared:
     
     return x_sorted, rho_sorted
 
-def generate_eigenvalues_batch(N: int, T: int, N1: int, sigmas_squared: list[float], batch_size: int) -> list:
+def generate_eigenvalues_batch(N_list: list[int], T: int, sigmas_squared: list[float], batch_size: int) -> list:
     """
     Generuje wartosci wlasne w partiach, aby efektywnie zarzadzac pamiecia.
     """
     eigenvalues = []
     for _ in range(batch_size):
-        X = generate_X(N, T, N1, sigmas_squared)
+        X = generate_X(N_list, T, sigmas_squared)
         C = (1/T) * X @ X.T
         eigenvalues.extend(np.linalg.eigvalsh(C))
     return eigenvalues
