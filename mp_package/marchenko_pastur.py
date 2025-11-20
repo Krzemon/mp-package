@@ -121,7 +121,7 @@ def theoretical_eigenvalue_distribution(N_list: list[int], T: int, sigmas_square
     x_sorted = x_values[sorted_indices]
     rho_sorted = rho_values[sorted_indices]
     
-    return x_sorted, rho_sorted
+    return x_sorted.tolist(), rho_sorted.tolist()
 
 def generate_eigenvalues_batch(N_list: list[int], T: int, sigmas_squared: list[float], batch_size: int) -> list:
     """
@@ -132,4 +132,4 @@ def generate_eigenvalues_batch(N_list: list[int], T: int, sigmas_squared: list[f
         X = generate_X(N_list, T, sigmas_squared)
         C = (1/T) * X @ X.T
         eigenvalues.extend(np.linalg.eigvalsh(C))
-    return eigenvalues
+    return eigenvalues.tolist()
