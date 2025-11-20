@@ -9,8 +9,6 @@ def generate_X(N_list: list[int], T: int, sigmas_squared: list[float]) -> np.nda
     N_list[i] - liczba wierszy dla grupy i
     sigmas_squared[i] - wariancja dla grupy i
     """
-    # if len(N_list) != len(sigmas_squared):
-    #     raise ValueError("N_list i sigmas_squared muszą mieć tę samą długość")
     
     N_total = sum(N_list)
     X = np.zeros((N_total, T))
@@ -123,12 +121,12 @@ def theoretical_eigenvalue_distribution(N_list: list[int], T: int, sigmas_square
     
     return x_sorted, rho_sorted
 
-def generate_eigenvalues_batch(N_list: list[int], T: int, sigmas_squared: list[float], batch_size: int) -> list:
+def generate_eigenvalues(N_list: list[int], T: int, sigmas_squared: list[float], num_trials: int) -> list:
     """
     Generuje wartosci wlasne w partiach, aby efektywnie zarzadzac pamiecia.
     """
     eigenvalues = []
-    for _ in range(batch_size):
+    for _ in range(num_trials):
         X = generate_X(N_list, T, sigmas_squared)
         C = (1/T) * X @ X.T
         eigenvalues.extend(np.linalg.eigvalsh(C))
