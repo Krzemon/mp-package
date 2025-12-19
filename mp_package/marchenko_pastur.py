@@ -3,25 +3,68 @@
 import numpy as np
 from scipy.optimize import root_scalar
 
-def generate_X(N_list: list[int], T: int, sigmas_squared: list[float]) -> np.ndarray:
+distributions = {
+    "normal": lambda shape, var: np.random.normal(loc=0, scale=np.sqrt(var), size=shape),
+    "uniform": lambda shape, var: np.random.uniform(low=-np.sqrt(3*var), high=np.sqrt(3*var), size=shape),
+    "exponential": lambda shape, var: np.random.exponential(scale=np.sqrt(var), size=shape),
+    "cauchy": lambda shape, var: np.random.standard_cauchy(size=shape) * np.sqrt(var),
+    "log-normal": lambda shape, var: np.random.lognormal(mean=0, sigma=np.sqrt(np.log(var + 1)), size=shape),
+    "bernoulli": lambda shape, var: np.random.choice([-1, 1], size=shape) * np.sqrt(var),
+    "t-Student": lambda shape, var: np.random.standard_t(df=3, size=shape) * np.sqrt(var / 3),
+}
+
+def generate_random(dist_name, shape, var):
+    return distributions[dist_name](shape, var)
+
+def generate_X(N_list: list[int], T: int, sigmas_squared: list[float], dist_name: str) -> np.ndarray:
     """
-    Generuje macierz danych X z wieloma grupami o roznych wariancjach.
-    N_list[i] - liczba wierszy dla grupy i
-    sigmas_squared[i] - wariancja dla grupy i
+    Generuje macierz danych X z wieloma grupami o różnych wariancjach.
+
+    :param N_list: lista liczby wierszy dla kolejnych grup
+    :param sigmas_squared: lista wariancji dla kolejnych grup 
+    :return: macierz wymiaru NxT
     """
-    
     N_total = sum(N_list)
     X = np.zeros((N_total, T))
     start_row = 0
     for n_rows, sigma_sq in zip(N_list, sigmas_squared):
         end_row = start_row + n_rows
-        X[start_row:end_row, :] = np.random.normal(0, np.sqrt(sigma_sq), size=(n_rows, T))
+        # X[start_row:end_row, :] = np.random.normal(0, np.sqrt(sigma_sq), size=(n_rows, T))
+        X[start_row:end_row, :] = generate_random(dist_name, shape=(n_rows, T), var=sigma_sq)
         start_row = end_row
     return X
 
+def generate_eigenvalues(N_list: list[int], T: int, sigmas_squared: list[float], num_trials: int, dist_name: str = "normal") -> tuple[np.ndarray, list[float]]:
+    """
+    Generuje wartości własne.
+    N_list[i] - liczba wierszy dla grupy i
+    T - liczba obserwacji 
+    sigmas_squared[i] - wariancja dla grupy i
+    num_trials - liczba wywołań
+    """
+    N_total = sum(N_list)
+    all_eigenvalues = np.empty(num_trials * N_total)
+
+    for i in range(num_trials):
+        X = generate_X(N_list, T, sigmas_squared, dist_name)
+        C = (1 / T) * X @ X.T
+        all_eigenvalues[i * N_total : (i + 1) * N_total] = np.linalg.eigvalsh(C)
+    mean = np.mean(all_eigenvalues)
+    var = np.var(all_eigenvalues)
+    stats_dict = {
+        "mean": mean,
+        "variance": var,
+        "skewness": np.mean((all_eigenvalues - mean)**3) / var**1.5, 
+        "kurtosis": np.mean((all_eigenvalues - mean)**4) / var**2, 
+        "min": np.min(all_eigenvalues), 
+        "max": np.max(all_eigenvalues)
+    }
+
+    return all_eigenvalues, stats_dict
+
 def equation_7(Y: float, X: float, weights: list[float], sigmas_squared: list[float], r: float) -> float:
     """
-    Rownanie (7) z artykulu dla danego punktu Z = X + iY.
+    Równanie (7) z artykułu dla danego punktu Z = X + iY.
     """
     result = 0
     for k in range(len(weights)):
@@ -87,8 +130,6 @@ def calculate_x_and_rho(X_values: np.ndarray, Y_values: np.ndarray, weights: lis
 ###########
 
 
-
-
 def estimate_spectrum_range(sigmas_squared: list[float], r: float) -> tuple[float, float]:
     """
     Szacuje zakres widma na podstawie wartosci wlasnych i parametru r.
@@ -99,7 +140,6 @@ def estimate_spectrum_range(sigmas_squared: list[float], r: float) -> tuple[floa
 
     X_min = min_lambda * (1 - np.sqrt(r))**2
     X_max = max_lambda * (1 + np.sqrt(r))**2
-    # print(f"Zakres widma: X_min = {X_min:.4f}, X_max = {X_max:.4f}")
     return X_min, X_max
 
 def theoretical_eigenvalue_distribution(N_list: list[int], T: int, sigmas_squared: list[float], num_points: int=1000) -> tuple[np.ndarray, np.ndarray]:
@@ -119,18 +159,15 @@ def theoretical_eigenvalue_distribution(N_list: list[int], T: int, sigmas_square
     x_sorted = x_values[sorted_indices]
     rho_sorted = rho_values[sorted_indices]
     
-    return x_sorted, rho_sorted
-
-def generate_eigenvalues(N_list: list[int], T: int, sigmas_squared: list[float], num_trials: int) -> list:
-    """
-    Generuje wartosci wlasne w partiach, aby efektywnie zarzadzac pamiecia.
-    """
-    N_total = sum(N_list)
-    all_eigenvalues = np.empty(num_trials * N_total)
-
-    for i in range(num_trials):
-        X = generate_X(N_list, T, sigmas_squared)
-        C = (1 / T) * X @ X.T
-        all_eigenvalues[i * N_total : (i + 1) * N_total] = np.linalg.eigvalsh(C)
-
-    return all_eigenvalues
+    mask = np.abs(rho_sorted) > 1e-10
+    mean = np.mean(rho_sorted[mask])
+    var  = np.var(rho_sorted[mask])
+    stats_dict = {
+        "mean": mean,
+        "variance": var,
+        "skewness": np.mean((rho_sorted - mean)**3) / var**1.5, 
+        "kurtosis": np.mean((rho_sorted - mean)**4) / var**2, 
+        "min": X_min, 
+        "max": X_max
+    }
+    return x_sorted, rho_sorted, stats_dict
