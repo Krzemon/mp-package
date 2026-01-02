@@ -7,10 +7,7 @@ distributions = {
     "normal": lambda shape, var: np.random.normal(loc=0, scale=np.sqrt(var), size=shape),
     "uniform": lambda shape, var: np.random.uniform(low=-np.sqrt(3*var), high=np.sqrt(3*var), size=shape),
     "exponential": lambda shape, var: np.random.exponential(scale=np.sqrt(var), size=shape),
-    "cauchy": lambda shape, var: np.random.standard_cauchy(size=shape) * np.sqrt(var),
-    "log-normal": lambda shape, var: np.random.lognormal(mean=0, sigma=np.sqrt(np.log(var + 1)), size=shape),
     "bernoulli": lambda shape, var: np.random.choice([-1, 1], size=shape) * np.sqrt(var),
-    "t-Student": lambda shape, var: np.random.standard_t(df=3, size=shape) * np.sqrt(var / 3),
 }
 
 def generate_random(dist_name, shape, var):
@@ -20,8 +17,8 @@ def generate_X(N_list: list[int], T: int, sigmas_squared: list[float], dist_name
     """
     Generuje macierz danych X z wieloma grupami o różnych wariancjach.
 
-    :param N_list: lista liczby wierszy dla kolejnych grup
-    :param sigmas_squared: lista wariancji dla kolejnych grup 
+    :param N_list: lista liczby wierszy dla grup o tej samej wariancji
+    :param sigmas_squared: lista zawierająca wariancje grup 
     :return: macierz wymiaru NxT
     """
     N_total = sum(N_list)
@@ -29,18 +26,20 @@ def generate_X(N_list: list[int], T: int, sigmas_squared: list[float], dist_name
     start_row = 0
     for n_rows, sigma_sq in zip(N_list, sigmas_squared):
         end_row = start_row + n_rows
-        # X[start_row:end_row, :] = np.random.normal(0, np.sqrt(sigma_sq), size=(n_rows, T))
         X[start_row:end_row, :] = generate_random(dist_name, shape=(n_rows, T), var=sigma_sq)
         start_row = end_row
     return X
 
-def generate_eigenvalues(N_list: list[int], T: int, sigmas_squared: list[float], num_trials: int, dist_name: str = "normal") -> tuple[np.ndarray, list[float]]:
+def generate_eigenvalues(N_list: list[int], T: int, sigmas_squared: list[float], num_trials: int, dist_name: str = "normal") -> tuple[np.ndarray, dict[str, float]]:
     """
-    Generuje wartości własne.
-    N_list[i] - liczba wierszy dla grupy i
-    T - liczba obserwacji 
-    sigmas_squared[i] - wariancja dla grupy i
-    num_trials - liczba wywołań
+    Oblicza wartości własne.
+
+    :param N_list: lista stopni swobody (wierszy) o tej samej wariancji
+    :param T: lista danych (kolumn) dla każdego stopnia swobody
+    :param sigmas_squared: lista wariancji dla każdej grupy o tej samej wariancji 
+    :param num_trials: liczba wywołań
+    :param dist_name: nazwa rozkładu z jakiego losowane są dane
+    :return: krotka (tuple) danych: (wszytskie wartości własne, słownik zawierający statystyki) 
     """
     N_total = sum(N_list)
     all_eigenvalues = np.empty(num_trials * N_total)
