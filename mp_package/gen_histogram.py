@@ -3,7 +3,7 @@ import numpy as np
 distributions = {
     "normal": lambda shape, var: np.random.normal(loc=0, scale=np.sqrt(var), size=shape),
     "uniform": lambda shape, var: np.random.uniform(low=-np.sqrt(3*var), high=np.sqrt(3*var), size=shape),
-    "exponential": lambda shape, var: np.random.exponential(scale=np.sqrt(var), size=shape),
+    "exponential": lambda shape, var: np.random.exponential(scale=np.sqrt(var), size=shape) * np.random.choice([-1, 1], size=shape),
     "bernoulli": lambda shape, var: np.random.choice([-1, 1], size=shape) * np.sqrt(var),
 }
 
@@ -12,7 +12,7 @@ def generate_random(dist_name, shape, var):
 
 def generate_eigenvalues(N_list: list[int], T: int, sigmas_squared: list[float], num_trials: int, dist_name: str = "normal") -> tuple[np.ndarray, list[float]]:
     """
-    Oblicza wartości własne.
+    Oblicza wartości własne i statystyki rozkładu.
 
     :param N_list: lista ilości stopni swobody (wierszy) dla grup o tej samej wariancji
     :param T: liczba danych (kolumn) dla każdego stopnia swobody
