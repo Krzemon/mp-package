@@ -3,7 +3,7 @@ import numpy as np
 distributions = {
     "normal": lambda shape, var: np.random.normal(loc=0, scale=np.sqrt(var), size=shape),
     "uniform": lambda shape, var: np.random.uniform(low=-np.sqrt(3*var), high=np.sqrt(3*var), size=shape),
-    "exponential": lambda shape, var: np.random.exponential(scale=np.sqrt(var), size=shape) * np.random.choice([-1, 1], size=shape),
+    "exponential": lambda shape, var: np.random.exponential(scale=np.sqrt(var/2), size=shape) * np.random.choice([-1, 1], size=shape),
     "bernoulli": lambda shape, var: np.random.choice([-1, 1], size=shape) * np.sqrt(var),
 }
 

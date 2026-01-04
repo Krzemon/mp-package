@@ -10,7 +10,7 @@ def equation_7(Y: float, X: float, weights: list[float], sigmas_squared: list[fl
     :param Y: Wartość Im{Z} horyzontu krytycznego
     :param X: Wartość Re{Z} horyzontu krytycznego
     :param weights: lista wag zawartości kolejnych grup 
-    :param sigmas_squared: tablica (list) wariancji kolejnych grup 
+    :param sigmas_squared: lista wariancji kolejnych grup 
     :param r: stosunek N/T (liczba_wierszy / liczba kolumn; macierzy X)
     :return: residuum równania (7)
     """
@@ -24,8 +24,8 @@ def find_critical_horizon(X_values: np.ndarray, weights: list[float], sigmas_squ
     Rozwiązuje równanie (7); obliczenie horyzontu krytycznego.
 
     :param X_values: tablica (np.ndarray) wartosci X w zakresie teoretycznym widma [lambda_min, lambda_max] 
-    :param weights: tablica (list) wag zawartości kolejnych grup 
-    :param sigmas_squared: tablica (list) wariancji kolejnych grup 
+    :param weights: lista wag zawartości kolejnych grup 
+    :param sigmas_squared: lista wariancji kolejnych grup 
     :param r: stosunek N/T (liczba_wierszy / liczba kolumn; macierzy X)
     :return: tablica (np.array) Y = Y(X_values).
     """
@@ -53,8 +53,8 @@ def calculate_x_and_rho(X_values: np.ndarray, Y_values: np.ndarray, weights: lis
 
     :param X_values: tablica (np.ndarray) wartosci X w zakresie teoretycznym widma [lambda_min, lambda_max] 
     :param Y_values: tablica (np.ndarray) wartosci Y będące rozwiązaniem równania (8) w funkcji wartości X
-    :param weights: tablica (list) wag zawartości kolejnych grup 
-    :param sigmas_squared: tablica (list) wariancji kolejnych grup 
+    :param weights: lista wag zawartości kolejnych grup 
+    :param sigmas_squared: lista wariancji kolejnych grup 
     :param r: stosunek N/T (liczba_wierszy / liczba kolumn; macierzy X)
     :return: krotka (tuple) danych: (np.ndarray X, np.ndarray RHO) 
     """
@@ -95,7 +95,7 @@ def estimate_spectrum_range(sigmas_squared: list[float], r: float) -> tuple[floa
     """
     Szacuje zakres widma na podstawie wariancji i parametru r.
 
-    :param sigmas_squared: tablica (list) wariancji kolejnych grup 
+    :param sigmas_squared: lista wariancji kolejnych grup 
     :param r: stosunek N/T (liczba_wierszy / liczba kolumn; macierzy X)
     :return: krotka (tuple) danych: (lambda_min, lambda_max) 
     """
