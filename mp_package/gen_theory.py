@@ -128,19 +128,29 @@ def theoretical_eigenvalue_distribution(N_list: list[int], T: int, sigmas_square
     Y_values = find_critical_horizon(X_values, weights, sigmas_squared, r)
     x_values, rho_values = calculate_x_and_rho(X_values, Y_values, weights, sigmas_squared, r)
     
-    sorted_indices = np.argsort(x_values)
-    x_sorted = x_values[sorted_indices]
-    rho_sorted = rho_values[sorted_indices]
-    
-    mask = np.abs(rho_sorted) > 1e-10
-    mean = np.mean(rho_sorted[mask])
-    var  = np.var(rho_sorted[mask])
+    # sorted_indices = np.argsort(x_values)
+    # x_sorted = x_values[sorted_indices]
+    # rho_sorted = rho_values[sorted_indices]
+
+    idx = np.argsort(x_values)
+    x = x_values[idx]
+    rho = rho_values[idx]
+
+    Z = np.trapezoid(rho, x)
+    rho = rho / Z
+    mean = np.trapezoid(x * rho, x)
+    var = np.trapezoid((x - mean)**2 * rho, x)
+
+    skewness = (np.trapezoid((x - mean)**3 * rho, x) / var**1.5)
+    kurtosis = (np.trapezoid((x - mean)**4 * rho, x) / var**2)
+
     stats_dict = {
         "mean": mean,
         "variance": var,
-        "skewness": np.mean((rho_sorted - mean)**3) / var**1.5, 
-        "kurtosis": np.mean((rho_sorted - mean)**4) / var**2, 
-        "min": X_min, 
+        "skewness": skewness,
+        "kurtosis": kurtosis,
+        "min": X_min,
         "max": X_max
     }
-    return x_sorted, rho_sorted, stats_dict
+
+    return x, rho, stats_dict
