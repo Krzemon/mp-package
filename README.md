@@ -1,18 +1,16 @@
-lokalna instalacja pakietu w trybie deweloperskim 
-pip install -e .[dev]
-# [dev] - extra dependencies
+# MP Package
 
-FAST API DOCs
-http://127.0.0.1:8000/docs
-http://127.0.0.1:8000/redoc
+The **MP Package** is a Python computational package designed for generating theoretical distributions and performing Monte Carlo simulations. It can be used independently of any web application, making it versatile for integration into other Python projects.
 
-pytest -v
+## Installation
 
-pip install -e .[dev]
-pip install -e . 
+You can use the package in one of two ways:
 
-Uruchom wszystkie testy:
-pytest
+### 1. Directly in Your Project
+Download the package and include it in your project’s codebase.
 
-Uruchom testy z raportem pokrycia kodu (jeśli masz pytest-cov):
-pytest --cov=matrix_utils
+### 2. Via GitHub Dependency
+Add the repository URL to your project dependencies. This allows you to install the package alongside your other Python libraries, for example using `pip`:
+
+```bash
+pip install git+https://github.com/Krzemon/mp-package.git
